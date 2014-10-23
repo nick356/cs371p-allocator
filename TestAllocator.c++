@@ -274,5 +274,20 @@ TYPED_TEST(TestView, TestView3){
 	}
 }
 
+TYPED_TEST(TestView, TestView4){
+	typedef typename TestFixture::allocator_type  allocator_type;
+	typedef typename TestFixture::value_type      value_type;
+	typedef typename TestFixture::difference_type difference_type;
+	typedef typename TestFixture::pointer         pointer;
+
+	allocator_type x;
+	const difference_type	s = 100;
+	const value_type	v = 4;
+	const pointer		b = x.allocate(s);
+
+
+
+}
+
 
 

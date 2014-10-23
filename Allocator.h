@@ -163,32 +163,39 @@ class Allocator {
 					i = i+temp + sizeof(T);
 				}else if(a[i] < sizeofN){
 					i = i + a[i] +sizeof(T) ;
-				}else{
+				}else {
 					int orig_size = a[i];
 					int orig_last = i+a[i]+sizeof(T);
 					int negsize = (-1 *sizeofN);
 					int oldI = i;
 					
-					/*cout<<endl;
-					cout<<"This is the orig_size: "<<orig_size<<endl;
-					cout<<"This is the orig_last: "<<orig_last<<endl;
-					cout<<endl;
-					cout<<"This is the size being taken up: "<<negsize<<endl;
-					cout<<endl;
-					cout<<endl;*/
-					a[i] = negsize;
-					a[i + sizeofN+sizeof(T)] = negsize;
-					//cout<<"This is the address of the second part: "<< i+sizeofN+sizeof(T)<<endl;
-					//cout<<endl;
-					i = i + sizeofN +sizeof(T)*2;
-					//cout<<"This is the new i: "<<i;
-					//cout<<endl;					
-					a[i] = orig_size + (negsize)-2*sizeof(T);
-					//cout<<"This is what goes in it: "<<orig_size+negsize-2*sizeof(T)<<endl;
-					a[orig_last] = orig_size + (negsize)-2*sizeof(T);
-					isFound = true;
-					assert(valid());
-					return (pointer)&a[oldI+sizeof(T)];
+					if(orig_size - sizeofN < sizeof(T)+(2*sizeof(int))){
+						a[i] = a[i] * -1;
+						a[orig_last] = a[orig_last] * -1;
+						isFound = true;
+						return (pointer)&a[i+sizeof(T)];
+					}else{
+						/*cout<<endl;
+						cout<<"This is the orig_size: "<<orig_size<<endl;
+						cout<<"This is the orig_last: "<<orig_last<<endl;
+						cout<<endl;
+						cout<<"This is the size being taken up: "<<negsize<<endl;
+						cout<<endl;
+						cout<<endl;*/
+						a[i] = negsize;
+						a[i + sizeofN+sizeof(T)] = negsize;
+						//cout<<"This is the address of the second part: "<< i+sizeofN+sizeof(T)<<endl;
+						//cout<<endl;
+						i = i + sizeofN +sizeof(T)*2;
+						//cout<<"This is the new i: "<<i;
+						//cout<<endl;					
+						a[i] = orig_size + (negsize)-2*sizeof(T);
+						//cout<<"This is what goes in it: "<<orig_size+negsize-2*sizeof(T)<<endl;
+						a[orig_last] = orig_size + (negsize)-2*sizeof(T);
+						isFound = true;
+						assert(valid());
+						return (pointer)&a[oldI+sizeof(T)];
+					}
 				}
 			}
 			return 0;
@@ -223,17 +230,72 @@ class Allocator {
 			if(a[index] > 0)
 				throw bad_alloc();
 			int size = a[index] * -1;
-			int endsent = size+(2*sizeof(T));
+			int endsent = index+ size+sizeof(T);
+			/*cout<<"1111111111111111111111111"<<endl;
 			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 			cout<<"This should be the index:  "<<index<<endl;
 			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 			cout<<"?????????????????????????"<<endl;
-			cout<<"This should be the size: "<<size<<endl;
+			cout<<"This should be the index value: "<<(int)a[index]<<endl;
 			cout<<"?????????????????????????"<<endl;
 			cout<<"........................."<<endl;
 			cout<<"This should be the end sentinal index: "<<endsent<<endl;
 			cout<<"........................."<<endl;
-			
+			cout<<"-------------------------"<<endl;
+			cout<<"This should be the end sentinal value: "<<(int)a[endsent]<<endl;
+			cout<<"-------------------------"<<endl;
+			cout<<"1111111111111111111111111"<<endl;*/
+			if(a[endsent] != a[index])
+				throw "The endsentinal value did not match the first sentinal value";
+
+			a[index] = (a[index]*-1);
+			int tempInd = index - sizeof(T);
+			//Checks to see if the block to the left is free if so it coalleses
+			if(index > sizeof(T) && a[tempInd] >= 0){
+				int newIndex = tempInd - a[tempInd] - sizeof(T);
+				a[newIndex] = a[newIndex] + a[index]+2*sizeof(T);
+				index = newIndex;
+			}
+
+			a[endsent] = a[index];
+			tempInd = endsent + sizeof(T);
+
+			/*cout<<"2222222222222222222222222"<<endl;
+			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<"This should be the index:  "<<index<<endl;
+			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<"?????????????????????????"<<endl;
+			cout<<"This should be the index value: "<<(int)a[index]<<endl;
+			cout<<"?????????????????????????"<<endl;
+			cout<<"........................."<<endl;
+			cout<<"This should be the end sentinal index: "<<endsent<<endl;
+			cout<<"........................."<<endl;
+			cout<<"-------------------------"<<endl;
+			cout<<"This should be the end sentinal value: "<<(int)a[endsent]<<endl;
+			cout<<"-------------------------"<<endl;
+			cout<<"2222222222222222222222222"<<endl;
+			cout<<"This is tempInd: "<<tempInd<<endl;
+			cout<<"This is tempInd value: "<<(int)a[tempInd]<<endl;*/
+			if(endsent < N - sizeof(T) && a[tempInd] >=  0){
+				int newEndSent = tempInd + a[tempInd]+sizeof(T);
+				a[newEndSent] = a[newEndSent] + a[endsent]+2*sizeof(T);
+				endsent = newEndSent;
+				a[index] = a[endsent];
+			}
+			/*cout<<"3333333333333333333333333"<<endl;
+			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<"This should be the index:  "<<index<<endl;
+			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<"?????????????????????????"<<endl;
+			cout<<"This should be the index value: "<<(int)a[index]<<endl;
+			cout<<"?????????????????????????"<<endl;
+			cout<<"........................."<<endl;
+			cout<<"This should be the end sentinal index: "<<endsent<<endl;
+			cout<<"........................."<<endl;
+			cout<<"-------------------------"<<endl;
+			cout<<"This should be the end sentinal value: "<<(int)a[endsent]<<endl;
+			cout<<"-------------------------"<<endl;
+			cout<<"3333333333333333333333333"<<endl;*/
 			assert(valid());
 		}
 
