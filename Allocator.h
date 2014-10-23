@@ -74,14 +74,31 @@ class Allocator {
 		* <your documentation>
 		*/
 		bool valid () const {
-			int i = 0;
+			unsigned int i = 0;
 			bool isVal = true;
+			int value=0;
+			//int tempend=0;
 			while(i<N-sizeof(T)){
-				if(a[i] != a[a[i]+sizeof(T)])
+				if(a[i]<0)
+					value = a[i]*-1;
+				else
+					value = a[i];
+				//cout<<"i is: "<< i<<" and a[i] is: "<<(T)a[i]<<endl;
+				//cout<<"a["<<i+value+sizeof(T)<<"] is: "<<(T)a[i+value+sizeof(T)]<<endl;
+				if(a[i] != a[i+value+sizeof(T)]){
 					isVal = false;
-				cout<<"i is: "<< i<<" and a[i] is: "<<(int)a[i]<<endl;
-				cout<<"a[i]+sizeof(T) is: "<<(int)a[i]+sizeof(T)<<" and a[a[i]+sizeof(T)] is: "<< (int)a[a[i]+sizeof(T)]<<endl;
-				i = a[i]+sizeof(T);
+					break;
+				}
+
+				/*if(a[i+value+sizeof(T)]<0){
+					tempend = a[i+value+sizeof(T)]*-1;
+				}else{
+					tempend = a[i+value+sizeof(T)];
+				}*/
+				//cout<<"i is: "<< i<<" and a[i] is: "<<(T)a[i]<<endl;
+				//cout<<"a["<<i+value+sizeof(T)<<"] is: "<<(T)a[i+value+sizeof(T)]<<endl;
+				i = i+value+sizeof(T)*2;
+				//cout<<"This is i before it jumps back through the while loop: "<< i<<endl;
 			}
 			return isVal;
 		}
@@ -106,10 +123,13 @@ class Allocator {
 		* throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
 		*/
 		Allocator () {
-			if(N < sizeof(T) + (2 * sizeof(T)))
-				throw;
+			if(N < sizeof(T) + (2 * sizeof(int)))
+				throw bad_alloc();
 			a[0] = N - 2*sizeof(T);
 			a[N-sizeof(T)] = N - 2*sizeof(T);
+
+			//cout<<"This is a[0]: "<<(T)a[0]<<endl;
+			//cout<<"This is a[N-sizeof(T)]: "<<(T)a[N-sizeof(T)]<<endl;
 
 			assert(valid());
 		}
@@ -132,10 +152,11 @@ class Allocator {
 		* return 0, if allocation fails
 		*/
 		pointer allocate (size_type n) {
-			assert(valid());
+			if(n == 0)
+				throw bad_alloc();
 			bool isFound = false;
 			int sizeofN = sizeof(T) * n;
-			int i = 0;
+			unsigned int i = 0;
 			while(i<N-sizeof(T) && !isFound){
 				if(a[i]<0){
 					int temp = -1*a[i];
@@ -145,14 +166,30 @@ class Allocator {
 				}else{
 					int orig_size = a[i];
 					int orig_last = i+a[i]+sizeof(T);
+					int negsize = (-1 *sizeofN);
+					int oldI = i;
 					
-					a[i] = -1 * sizeofN;
-					a[i + sizeofN + sizeof(T)] = -1 * sizeofN;
-					i = i + sizeofN +(2*sizeof(T));
-					a[
+					/*cout<<endl;
+					cout<<"This is the orig_size: "<<orig_size<<endl;
+					cout<<"This is the orig_last: "<<orig_last<<endl;
+					cout<<endl;
+					cout<<"This is the size being taken up: "<<negsize<<endl;
+					cout<<endl;
+					cout<<endl;*/
+					a[i] = negsize;
+					a[i + sizeofN+sizeof(T)] = negsize;
+					//cout<<"This is the address of the second part: "<< i+sizeofN+sizeof(T)<<endl;
+					//cout<<endl;
+					i = i + sizeofN +sizeof(T)*2;
+					//cout<<"This is the new i: "<<i;
+					//cout<<endl;					
+					a[i] = orig_size + (negsize)-2*sizeof(T);
+					//cout<<"This is what goes in it: "<<orig_size+negsize-2*sizeof(T)<<endl;
+					a[orig_last] = orig_size + (negsize)-2*sizeof(T);
+					isFound = true;
+					assert(valid());
+					return (pointer)&a[oldI+sizeof(T)];
 				}
-
-
 			}
 			return 0;
 		}// replace!

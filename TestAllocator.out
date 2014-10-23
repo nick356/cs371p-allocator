@@ -1,8 +1,8 @@
-==31995== Memcheck, a memory error detector
-==31995== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
-==31995== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
-==31995== Command: TestAllocator
-==31995== 
+==17644== Memcheck, a memory error detector
+==17644== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==17644== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==17644== Command: TestAllocator
+==17644== 
 Running main() from gtest_main.cc
 [==========] Running 22 tests from 6 test cases.
 [----------] Global test environment set-up.
@@ -10,11 +10,11 @@ Running main() from gtest_main.cc
 [ RUN      ] TestAllocator/0.One
 [       OK ] TestAllocator/0.One (11 ms)
 [ RUN      ] TestAllocator/0.Ten
-[       OK ] TestAllocator/0.Ten (4 ms)
+[       OK ] TestAllocator/0.Ten (5 ms)
 [ RUN      ] TestAllocator/0.Eleven
 [       OK ] TestAllocator/0.Eleven (3 ms)
 [ RUN      ] TestAllocator/0.Twelve
-[       OK ] TestAllocator/0.Twelve (4 ms)
+[       OK ] TestAllocator/0.Twelve (3 ms)
 [----------] 4 tests from TestAllocator/0 (34 ms total)
 
 [----------] 4 tests from TestAllocator/1, where TypeParam = std::allocator<double>
@@ -26,121 +26,65 @@ Running main() from gtest_main.cc
 [       OK ] TestAllocator/1.Eleven (3 ms)
 [ RUN      ] TestAllocator/1.Twelve
 [       OK ] TestAllocator/1.Twelve (3 ms)
-[----------] 4 tests from TestAllocator/1 (16 ms total)
+[----------] 4 tests from TestAllocator/1 (15 ms total)
 
 [----------] 4 tests from TestAllocator/2, where TypeParam = Allocator<int, 100>
 [ RUN      ] TestAllocator/2.One
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-[       OK ] TestAllocator/2.One (11 ms)
+[       OK ] TestAllocator/2.One (7 ms)
 [ RUN      ] TestAllocator/2.Ten
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-[       OK ] TestAllocator/2.Ten (1 ms)
+[       OK ] TestAllocator/2.Ten (3 ms)
 [ RUN      ] TestAllocator/2.Eleven
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-[       OK ] TestAllocator/2.Eleven (1 ms)
+[       OK ] TestAllocator/2.Eleven (3 ms)
 [ RUN      ] TestAllocator/2.Twelve
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
 [       OK ] TestAllocator/2.Twelve (2 ms)
-[----------] 4 tests from TestAllocator/2 (16 ms total)
+[----------] 4 tests from TestAllocator/2 (15 ms total)
 
 [----------] 4 tests from TestAllocator/3, where TypeParam = Allocator<double, 100>
 [ RUN      ] TestAllocator/3.One
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-[       OK ] TestAllocator/3.One (4 ms)
+[       OK ] TestAllocator/3.One (6 ms)
 [ RUN      ] TestAllocator/3.Ten
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-[       OK ] TestAllocator/3.Ten (2 ms)
+[       OK ] TestAllocator/3.Ten (4 ms)
 [ RUN      ] TestAllocator/3.Eleven
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-[       OK ] TestAllocator/3.Eleven (2 ms)
+[       OK ] TestAllocator/3.Eleven (3 ms)
 [ RUN      ] TestAllocator/3.Twelve
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-[       OK ] TestAllocator/3.Twelve (1 ms)
-[----------] 4 tests from TestAllocator/3 (10 ms total)
+[       OK ] TestAllocator/3.Twelve (2 ms)
+[----------] 4 tests from TestAllocator/3 (15 ms total)
 
 [----------] 3 tests from TestView/0, where TypeParam = Allocator<int, 100>
 [ RUN      ] TestView/0.TestView1
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
 [       OK ] TestView/0.TestView1 (2 ms)
 [ RUN      ] TestView/0.TestView2
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
 [       OK ] TestView/0.TestView2 (2 ms)
 [ RUN      ] TestView/0.TestView3
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
-i is: 0 and a[i] is: 92
-a[i]+sizeof(T) is: 96 and a[a[i]+sizeof(T)] is: 92
 [       OK ] TestView/0.TestView3 (1 ms)
-[----------] 3 tests from TestView/0 (6 ms total)
+[----------] 3 tests from TestView/0 (5 ms total)
 
 [----------] 3 tests from TestView/1, where TypeParam = Allocator<double, 100>
 [ RUN      ] TestView/1.TestView1
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
 [       OK ] TestView/1.TestView1 (2 ms)
 [ RUN      ] TestView/1.TestView2
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-[       OK ] TestView/1.TestView2 (2 ms)
+[       OK ] TestView/1.TestView2 (1 ms)
 [ RUN      ] TestView/1.TestView3
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-i is: 0 and a[i] is: 84
-a[i]+sizeof(T) is: 92 and a[a[i]+sizeof(T)] is: 84
-[       OK ] TestView/1.TestView3 (1 ms)
-[----------] 3 tests from TestView/1 (6 ms total)
+[       OK ] TestView/1.TestView3 (2 ms)
+[----------] 3 tests from TestView/1 (5 ms total)
 
 [----------] Global test environment tear-down
-[==========] 22 tests from 6 test cases ran. (112 ms total)
+[==========] 22 tests from 6 test cases ran. (115 ms total)
 [  PASSED  ] 22 tests.
-==31995== 
-==31995== HEAP SUMMARY:
-==31995==     in use at exit: 0 bytes in 0 blocks
-==31995==   total heap usage: 1,247 allocs, 1,247 frees, 112,610 bytes allocated
-==31995== 
-==31995== All heap blocks were freed -- no leaks are possible
-==31995== 
-==31995== For counts of detected and suppressed errors, rerun with: -v
-==31995== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)
+==17644== 
+==17644== HEAP SUMMARY:
+==17644==     in use at exit: 0 bytes in 0 blocks
+==17644==   total heap usage: 1,247 allocs, 1,247 frees, 112,007 bytes allocated
+==17644== 
+==17644== All heap blocks were freed -- no leaks are possible
+==17644== 
+==17644== For counts of detected and suppressed errors, rerun with: -v
+==17644== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)
 File 'TestAllocator.c++'
-Lines executed:57.45% of 141
-Branches executed:31.82% of 880
-Taken at least once:17.27% of 880
-Calls executed:32.72% of 654
+Lines executed:58.27% of 139
+Branches executed:43.18% of 880
+Taken at least once:23.86% of 880
+Calls executed:38.96% of 652
 Creating 'TestAllocator.c++.gcov'
 
 File '/usr/include/c++/4.7/ostream'
@@ -205,10 +149,10 @@ Calls executed:76.92% of 13
 Creating 'new_allocator.h.gcov'
 
 File 'Allocator.h'
-Lines executed:56.67% of 30
-Branches executed:50.00% of 32
-Taken at least once:31.25% of 32
-Calls executed:57.14% of 42
+Lines executed:87.27% of 55
+Branches executed:100.00% of 60
+Taken at least once:66.67% of 60
+Calls executed:42.86% of 28
 Creating 'Allocator.h.gcov'
 
 File '/usr/include/c++/4.7/bits/move.h'
@@ -376,8 +320,14 @@ No calls
 Creating 'char_traits.h.gcov'
 
 File '/usr/include/c++/4.7/new'
-Lines executed:100.00% of 2
+Lines executed:66.67% of 3
+No branches
+Calls executed:0.00% of 1
+Creating 'new.gcov'
+
+File '/usr/include/c++/4.7/exception'
+Lines executed:0.00% of 1
 No branches
 No calls
-Creating 'new.gcov'
+Creating 'exception.gcov'
 

@@ -152,11 +152,11 @@ TYPED_TEST(TestAllocator, Twelve){
 	typedef typename TestFixture::pointer         pointer;
 
 	allocator_type x;
-	const difference_type	s = 100;
+	const difference_type	s = 50;
 	const value_type	v = 4;
 	const pointer		b = x.allocate(s);
 	if(b != 0){
-		pointer end = b + s;
+		pointer end = b + (int)s;
 		pointer point = b;
 		try{
 			while(point != end){
@@ -190,11 +190,9 @@ TYPED_TEST(TestView, TestView1){
 	const difference_type s = 1;
 	const value_type      v = 2;
 	const pointer         p = x.allocate(s);
-	if (p != 0) {
+	if (p == 0) {
 		x.construct(p, v);
-		const allocator_type& temp = x;
-		const int& sigh = temp.view(0);
-		ASSERT_EQ(sigh, 2);
+		ASSERT_EQ(v, *p);
 		x.destroy(p);
 		x.deallocate(p, s);
 	}
@@ -207,11 +205,11 @@ TYPED_TEST(TestView, TestView2){
 	typedef typename TestFixture::pointer         pointer;
 
 	allocator_type x;
-	const difference_type	s = 100;
+	const difference_type	s = 50;
 	const value_type	v = 4;
 	const pointer		b = x.allocate(s);
 	if(b != 0){
-		pointer end = b + s;
+		pointer end = b + (int)s;
 		pointer point = b;
 		try{
 			while(point != end){
@@ -248,7 +246,7 @@ TYPED_TEST(TestView, TestView3){
 	const value_type	v = 4;
 	const pointer		b = x.allocate(s);
 	if(b != 0){
-		pointer end = b + s;
+		pointer end = b + (int)s;
 		pointer point = b;
 		try{
 			while(point != end){
