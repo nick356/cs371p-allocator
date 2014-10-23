@@ -219,7 +219,21 @@ class Allocator {
 		* <your documentation>
 		*/
 		void deallocate (pointer p, size_type) {
-			// <your code>
+			int index = ((char*)p - a)-sizeof(T);
+			if(a[index] > 0)
+				throw bad_alloc();
+			int size = a[index] * -1;
+			int endsent = size+(2*sizeof(T));
+			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<"This should be the index:  "<<index<<endl;
+			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<"?????????????????????????"<<endl;
+			cout<<"This should be the size: "<<size<<endl;
+			cout<<"?????????????????????????"<<endl;
+			cout<<"........................."<<endl;
+			cout<<"This should be the end sentinal index: "<<endsent<<endl;
+			cout<<"........................."<<endl;
+			
 			assert(valid());
 		}
 
