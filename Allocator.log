@@ -1,0 +1,72 @@
+commit 264740436275598ad4a42aa820a906b1483cd005
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Thu Oct 23 22:09:10 2014 -0500
+
+    Forgot Doxy file
+
+commit ba9c4db872fb9290dcb8b2bfbde85a89ab7c3a7a
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Thu Oct 23 22:03:51 2014 -0500
+
+    All done
+
+commit a9d22aba869e5e013b9778f1cadcaa8268dd9698
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Thu Oct 23 15:30:45 2014 -0500
+
+    Deallocator is working, need to write more test cases to make sure.
+
+commit 31331817a2e5f7fd7ded9331053e684990fe6b79
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Thu Oct 23 12:25:45 2014 -0500
+
+    Have begun forking on allocate. Realised had to cast to a char pointer
+
+commit ba9150281edb62018284af82f874f1aba9a9fd79
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Thu Oct 23 00:19:14 2014 -0500
+
+    Removed TestAllocator
+
+commit 887d2d33e074ec4cbf716bd3251175910dc4c63e
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Thu Oct 23 00:18:52 2014 -0500
+
+    Implemented part of the allocate function, and the program is passing several of the tests I have written. Also no compiler warnings nor valgrind issues
+
+commit 7483a470973564b76882238a8c7fe895561be6fe
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Wed Oct 22 17:06:41 2014 -0500
+
+    Removed TestAllocator program
+
+commit d91d2398c4c23b569634675890f9c8d3f983410e
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Wed Oct 22 17:06:05 2014 -0500
+
+    Added some unit tests, and I think I have finished the Allocator method. Working on allocate
+
+commit af5f334be8178efe2e4389be946e7350b0377f68
+Merge: 0efc2fe 86ffe0b
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Wed Oct 22 12:03:14 2014 -0500
+
+    Merge branch 'master' of github.com:nick356/cs371p-allocator
+
+commit 0efc2fe23adf5fa3da4cf109781e7f41f68a8481
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Wed Oct 22 12:02:30 2014 -0500
+
+    Removed file
+
+commit 33b49a77a13bc8f45d998e69dbc7074c005628b5
+Author: Nicholas Carter <nick356@cs.utexas.edu>
+Date:   Wed Oct 22 12:01:37 2014 -0500
+
+    Added the base files
+
+commit 86ffe0b9fd1234b0a29dbc06cfe726fddf3f68b2
+Author: nick356 <nac568@utexas.edu>
+Date:   Wed Oct 22 11:53:02 2014 -0500
+
+    Initial commit
