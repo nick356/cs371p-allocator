@@ -71,7 +71,10 @@ class Allocator {
 		/**
 		* O(1) in space
 		* O(n) in time
-		* <your documentation>
+         * Iterates through the block starting with the first sentinal
+	 * and calculates where the end sentinal is. After the end sentinal
+	 * has been found we increment the counter by the distance to that
+         * sentinal plus the size of the type.
 		*/
 		bool valid () const {
 			unsigned int i = 0;
@@ -122,7 +125,9 @@ class Allocator {
 		/**
 		* O(1) in space
 		* O(1) in time
-		* throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
+         * We set the beginning block with a positive sentinal vale,
+	 * and we set the sentinal at the end to the same positive value
+
 		*/
 		Allocator () {
 			if(N < sizeof(T) + (2 * sizeof(int)) || N <=0)
@@ -148,10 +153,17 @@ class Allocator {
 		/**
 		* O(1) in space
 		* O(n) in time
-		* after allocation there must be enough space left for a valid block
-		* the smallest allowable block is sizeof(T) + (2 * sizeof(int))
-		* choose the first block that fits
-		* return 0, if allocation fails
+         * We iterate through the array till we find the first non negative
+         * integer. When we find it we know we have a free block. We also 
+         * check to see if it will fit before we try and shove it in the block.
+         * We have to cast the value stored at a to be an int pointer
+	 * otherwise we will get some garbage. Once we store the value, we
+         * calculate the end sentinal for the block, and then make additional
+         * calculations to find the size of the now empty block. We then adjust
+         * the sentinals for that free block.
+         * after allocation there must be enough space left for a valid block
+         * the smallest allowable block is sizeof(T) + (2 * sizeof(int))
+         * choose the first block that fits
 		*/
 		pointer allocate (size_type n) {
 			//cout<<"What is n: "<<(int)n<<endl;
@@ -241,8 +253,11 @@ class Allocator {
 		/**
 		* O(1) in space
 		* O(1) in time
-		* after deallocation adjacent free blocks must be coalesced
-		* <your documentation>
+         * To deallocate a block we check to see if the index is 4 or not, that way we will not get a segentation fault when we check back to see
+	 * previouse block allocations. We then coalesced the blocks if needed and to do that we see if the next block starts with a negative. If
+	 * it does we do nothing, else we look a head by the apporiate size and adjust the sentinals at the start of the new block and the end.
+	 * We repeat this process if it has a block free on the left.
+         * after deallocation adjacent free blocks must be coalesced
 		*/
 		void deallocate (pointer p, size_type) {
 			if(p == 0)
