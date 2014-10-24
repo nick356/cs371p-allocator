@@ -152,7 +152,7 @@ TYPED_TEST(TestAllocator, Twelve){
 	typedef typename TestFixture::pointer         pointer;
 
 	allocator_type x;
-	const difference_type	s = 50;
+	const difference_type	s = 4;
 	const value_type	v = 4;
 	const pointer		b = x.allocate(s);
 	if(b != 0){
@@ -187,14 +187,32 @@ TYPED_TEST(TestView, TestView1){
 	typedef typename TestFixture::pointer         pointer;
 
 	allocator_type x;
-	const difference_type s = 1;
+	const difference_type s = 6;
 	const value_type      v = 2;
-	const pointer         p = x.allocate(s);
-	if (p == 0) {
-		x.construct(p, v);
-		ASSERT_EQ(v, *p);
-		x.destroy(p);
-		x.deallocate(p, s);
+	const pointer         b = x.allocate(s);
+	if (b != 0) {
+		pointer e = b + s;
+		pointer p = b;
+		try {
+			while (p != e) {
+				x.construct(p, v);
+				++p;
+			}
+		}
+		catch (...) {
+			while (b != p) {
+				--p;
+				x.destroy(p);
+			}
+			x.deallocate(b, s);
+		throw;
+		}
+		ASSERT_EQ(s, std::count(b, e, v));
+		while (b != e) {
+			--e;
+			x.destroy(e);
+		}
+		x.deallocate(b, s);
 	}
 }
 
@@ -205,34 +223,34 @@ TYPED_TEST(TestView, TestView2){
 	typedef typename TestFixture::pointer         pointer;
 
 	allocator_type x;
-	const difference_type	s = 50;
-	const value_type	v = 4;
-	const pointer		b = x.allocate(s);
-	if(b != 0){
-		pointer end = b + (int)s;
-		pointer point = b;
-		try{
-			while(point != end){
-				x.construct(point, v);
-				++point;
+	const difference_type s = 4;
+	const value_type      v = 2;
+	const pointer         b = x.allocate(s);
+	if (b != 0) {
+		pointer e = b + s;
+		pointer p = b;
+		try {
+			while (p != e) {
+				x.construct(p, v);
+				++p;
 			}
-		}catch(...){
-			while(b != point){
-				--point;
-				x.destroy(point);
+		}
+		catch (...) {
+			while (b != p) {
+				--p;
+				x.destroy(p);
 			}
 			x.deallocate(b, s);
 		throw;
 		}
-		const allocator_type& temp = x;
-		const int& sigh = temp.view(0);
-		ASSERT_EQ(sigh, 4);
-		while(b != end){
-			--end;
-			x.destroy(end);
+		ASSERT_EQ(s, std::count(b, e, v));
+		while (b != e) {
+			--e;
+			x.destroy(e);
 		}
 		x.deallocate(b, s);
 	}
+
 }
 
 TYPED_TEST(TestView, TestView3){
@@ -242,52 +260,159 @@ TYPED_TEST(TestView, TestView3){
 	typedef typename TestFixture::pointer         pointer;
 
 	allocator_type x;
-	const difference_type	s = 100;
-	const value_type	v = 4;
-	const pointer		b = x.allocate(s);
-	if(b != 0){
-		pointer end = b + (int)s;
-		pointer point = b;
-		try{
-			while(point != end){
-				x.construct(point, v);
-				++point;
+	const difference_type s = 10;
+	const value_type      v = 2;
+	const pointer         b = x.allocate(s);
+	if (b != 0) {
+		pointer e = b + s;
+		pointer p = b;
+		try {
+			while (p != e) {
+				x.construct(p, v);
+				++p;
 			}
-		}catch(...){
-			while(b != point){
-				--point;
-				x.destroy(point);
+		}
+		catch (...) {
+			while (b != p) {
+				--p;
+				x.destroy(p);
 			}
 			x.deallocate(b, s);
 		throw;
 		}
-		const allocator_type& temp = x;
-		const int& sigh = temp.view(0);
-		const int& sigh2 = temp.view(1);
-		ASSERT_EQ(sigh, 4);
-		ASSERT_EQ(sigh2, 4);
-		while(b != end){
-			--end;
-			x.destroy(end);
+		ASSERT_EQ(s, std::count(b, e, v));
+		while (b != e) {
+			--e;
+			x.destroy(e);
 		}
 		x.deallocate(b, s);
 	}
 }
 
-TYPED_TEST(TestView, TestView4){
-	typedef typename TestFixture::allocator_type  allocator_type;
-	typedef typename TestFixture::value_type      value_type;
-	typedef typename TestFixture::difference_type difference_type;
-	typedef typename TestFixture::pointer         pointer;
+TEST(Allocator, default1){
+	Allocator<int,100> x;
+	typedef int* pointer;
+        const pointer p = x.allocate(5);
+        const pointer t = x.allocate(3);
+        /*const Allocator<int, 100>& cx =x;
+	int i = cx.view(0);
+	int j = cx.view(28);
+	int k = cx.view(48);
+	if(i!= -20){
+	     x.destroy(p);
+	     x.destroy(t);
+	     x.deallocate(p,5);
+             x.deallocate(t,3);
+	     assert(false);	
+	}else if(j!=-12){
+	     x.destroy(p);
+	     x.destroy(t);
+             x.deallocate(p,5);
+             x.deallocate(t,3);	
+	    assert(false);
 
-	allocator_type x;
-	const difference_type	s = 100;
-	const value_type	v = 4;
-	const pointer		b = x.allocate(s);
+	}else{
+	     assert(true);
+	     x.destroy(p);
+             x.destroy(t);
+             x.deallocate(p,5);
+             x.deallocate(t,3);
+	}*/
+}
 
+TEST(Allocator, default2){
+	Allocator<int,100> x;
+        typedef int* pointer;
+//	cout<<"This is silly"<<endl;
+        const pointer p = x.allocate(5);
+//	cout<<"I shouldn't have to do this"<<endl;
+        const pointer t = x.allocate(3);
+//	cout<<"But I have to"<<endl;
+	const pointer q = x.allocate(2);
+//	cout<<"We are about to enter it"<<endl;
+       
+	
+}
+TEST(Deallocator, default3){
+	Allocator<int,100> x;
+        typedef int* pointer;
+	const pointer p = x.allocate(5);
+        x.destroy(p);
+	x.deallocate(p,5);
+  
+}
+
+TEST(Deallocator, default4){
+	Allocator<int,100> x;
+	typedef int* pointer;
+	const pointer p = x.allocate(5);
+	const pointer t = x.allocate(3);
+	x.destroy(p);
+	x.deallocate(p,5);
+	x.destroy(t);
+	x.deallocate(t,3);	
+}
+
+TEST(Deallocator,default5){
+	Allocator<int,100> x;
+	typedef int* pointer;
+	const pointer p = x.allocate(5);
+	const pointer t = x.allocate(3);
+	x.destroy(t);
+	x.deallocate(t,3);
+	x.destroy(p);
+	x.deallocate(p,5);
+}
+
+
+
+TEST(Deallocator,default6){
+	Allocator<int,100> x;
+        typedef int* pointer;
+        const pointer p = x.allocate(5);
+        const pointer t = x.allocate(3);
+        const pointer q = x.allocate(2);
+        x.destroy(t);
+        x.deallocate(t,3);
+	x.destroy(q);
+	x.deallocate(q,2);
+        x.destroy(p);
+        x.deallocate(p,5);
+}
+
+TEST(Constructor,default1){
+    Allocator<int, 16> x;
+      //x.destroy(p);
+      //x.deallocate(p,3);
+   
 
 
 }
 
+TEST(Constructor,default2){
+    Allocator<double,88> x;
+      assert( true);
+     // x.destroy(p);
+     // x.deallocate(p,5);
+   }
+
+
+
+
+TEST(Constructor,default3){
+    Allocator<int,100> x;
+      assert( true);
+      //x.destroy(p);
+      //x.deallocate(p,8);
+   }
+
+
+
+
+TEST(Constructor,default4){
+    Allocator<double, 72> x;
+	assert(true);
+
+}
 
 

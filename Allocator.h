@@ -79,17 +79,18 @@ class Allocator {
 			int value=0;
 			//int tempend=0;
 			while(i<N-sizeof(T)){
+				//cout<<"This is i at the start of the loop "<<i<<endl;
 				if(a[i]<0)
 					value = a[i]*-1;
 				else
 					value = a[i];
+
 				//cout<<"i is: "<< i<<" and a[i] is: "<<(T)a[i]<<endl;
 				//cout<<"a["<<i+value+sizeof(T)<<"] is: "<<(T)a[i+value+sizeof(T)]<<endl;
 				if(a[i] != a[i+value+sizeof(T)]){
 					isVal = false;
 					break;
 				}
-
 				/*if(a[i+value+sizeof(T)]<0){
 					tempend = a[i+value+sizeof(T)]*-1;
 				}else{
@@ -100,6 +101,7 @@ class Allocator {
 				i = i+value+sizeof(T)*2;
 				//cout<<"This is i before it jumps back through the while loop: "<< i<<endl;
 			}
+			//cout<<"Out of the while loop"<<endl;
 			return isVal;
 		}
 
@@ -123,7 +125,7 @@ class Allocator {
 		* throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
 		*/
 		Allocator () {
-			if(N < sizeof(T) + (2 * sizeof(int)))
+			if(N < sizeof(T) + (2 * sizeof(int)) || N <=0)
 				throw bad_alloc();
 			a[0] = N - 2*sizeof(T);
 			a[N-sizeof(T)] = N - 2*sizeof(T);
@@ -152,36 +154,48 @@ class Allocator {
 		* return 0, if allocation fails
 		*/
 		pointer allocate (size_type n) {
-			if(n == 0)
+			//cout<<"What is n: "<<(int)n<<endl;
+			if((int)n <= 0){
 				throw bad_alloc();
+			}
+
 			bool isFound = false;
 			int sizeofN = sizeof(T) * n;
 			unsigned int i = 0;
 			while(i<N-sizeof(T) && !isFound){
+				//cout<<"What is i: "<<i<<endl;
+				unsigned int orig_size = a[i];
+				
 				if(a[i]<0){
 					int temp = -1*a[i];
-					i = i+temp + sizeof(T);
-				}else if(a[i] < sizeofN){
-					i = i + a[i] +sizeof(T) ;
-				}else {
-					int orig_size = a[i];
-					int orig_last = i+a[i]+sizeof(T);
-					int negsize = (-1 *sizeofN);
-					int oldI = i;
+					//cout<<"This is temp: "<<temp<<endl;
+					i = i+temp + 2*sizeof(T);
+				}else if(orig_size - sizeofN < sizeof(T)+(2*sizeof(4))){
+					unsigned int orig_last = i+a[i]+sizeof(T);
+					a[i] = a[i] * -1;
+					a[orig_last] = a[orig_last] * -1;
+					isFound = true;
+					/*cout<<"This is i: "<<i<<endl;
+					cout<<"This is orig_last: "<<orig_last<<endl;
+					cout<<"This is the index for the pointer: "<<i+sizeof(T)<<endl;
+					cout<<"This is the value: "<<(T)a[i]<<endl;
+					cout<<"Do we ever get here"<<endl; */
+					return (pointer)&a[i+sizeof(T)];;
+				}else if(a[i]<sizeofN){
+					i = i+a[i]+sizeof(T);
+				}else{
+					unsigned int orig_last = i+a[i]+sizeof(T);
+					signed int negsize = (-1 *sizeofN);
+					signed int oldI = i;
 					
-					if(orig_size - sizeofN < sizeof(T)+(2*sizeof(int))){
-						a[i] = a[i] * -1;
-						a[orig_last] = a[orig_last] * -1;
-						isFound = true;
-						return (pointer)&a[i+sizeof(T)];
-					}else{
 						/*cout<<endl;
 						cout<<"This is the orig_size: "<<orig_size<<endl;
 						cout<<"This is the orig_last: "<<orig_last<<endl;
 						cout<<endl;
 						cout<<"This is the size being taken up: "<<negsize<<endl;
 						cout<<endl;
-						cout<<endl;*/
+						cout<<endl;
+						cout<<"What is i: "<<i<<endl;*/
 						a[i] = negsize;
 						a[i + sizeofN+sizeof(T)] = negsize;
 						//cout<<"This is the address of the second part: "<< i+sizeofN+sizeof(T)<<endl;
@@ -194,10 +208,15 @@ class Allocator {
 						a[orig_last] = orig_size + (negsize)-2*sizeof(T);
 						isFound = true;
 						assert(valid());
+
+						//cout<<"This is the index for the pointer: "<<oldI+sizeof(T)<<endl;
+						//cout<<"This is the value: "<<(T)a[oldI]<<endl;
 						return (pointer)&a[oldI+sizeof(T)];
-					}
+					
 				}
 			}
+			//cout<<"Do we ever get here"<<endl;
+			throw bad_alloc();
 			return 0;
 		}// replace!
 
@@ -226,11 +245,13 @@ class Allocator {
 		* <your documentation>
 		*/
 		void deallocate (pointer p, size_type) {
-			int index = ((char*)p - a)-sizeof(T);
+			if(p == 0)
+				throw bad_alloc();
+			unsigned int index = ((char*)p - a)-sizeof(T);
 			if(a[index] > 0)
 				throw bad_alloc();
 			int size = a[index] * -1;
-			int endsent = index+ size+sizeof(T);
+			unsigned int endsent = index+ size+sizeof(T);
 			/*cout<<"1111111111111111111111111"<<endl;
 			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 			cout<<"This should be the index:  "<<index<<endl;
@@ -273,14 +294,22 @@ class Allocator {
 			cout<<"-------------------------"<<endl;
 			cout<<"This should be the end sentinal value: "<<(int)a[endsent]<<endl;
 			cout<<"-------------------------"<<endl;
-			cout<<"2222222222222222222222222"<<endl;
-			cout<<"This is tempInd: "<<tempInd<<endl;
-			cout<<"This is tempInd value: "<<(int)a[tempInd]<<endl;*/
-			if(endsent < N - sizeof(T) && a[tempInd] >=  0){
+			cout<<"2222222222222222222222222"<<endl;*/
+			
+			//cout<<"This is tempInd value: "<<(int)a[tempInd]<<endl;
+			//cout<<"This is tempInd: "<<tempInd<<endl;
+			if(endsent +sizeof(T) < N - sizeof(T)  && a[tempInd] >=  0){
 				int newEndSent = tempInd + a[tempInd]+sizeof(T);
+				/*cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+				cout<<"What is newEndSent: "<<newEndSent<<endl;
+				cout<<"What is the value of newEndSent: "<<(T)a[newEndSent]<<endl;
+				cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+				cout<<"What is oldendSent?: "<<endsent<<endl;
+				cout<<"What is it's value: "<<(T)a[endsent]<<endl;*/
 				a[newEndSent] = a[newEndSent] + a[endsent]+2*sizeof(T);
 				endsent = newEndSent;
 				a[index] = a[endsent];
+				//cout<<"This is the value of a[index]"<<(T)a[index]<<endl;
 			}
 			/*cout<<"3333333333333333333333333"<<endl;
 			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
@@ -296,7 +325,8 @@ class Allocator {
 			cout<<"This should be the end sentinal value: "<<(int)a[endsent]<<endl;
 			cout<<"-------------------------"<<endl;
 			cout<<"3333333333333333333333333"<<endl;*/
-			assert(valid());
+			//assert(valid());
+			//cout<<"We got passed this valid()."<<endl;
 		}
 
 		// -------
