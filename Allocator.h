@@ -39,6 +39,10 @@ class Allocator {
 
 		typedef       value_type&       reference;
 		typedef const value_type& const_reference;
+		
+		//int view(int i){
+		//	return (int)a[i];
+		//}
 
 	public:
 		// -----------
@@ -81,18 +85,18 @@ class Allocator {
 			bool isVal = true;
 			int value=0;
 			//int tempend=0;
-			while(i<N-sizeof(T)){
-				//cout<<"This is i at the start of the loop "<<i<<endl;
-				if(a[i]<0)
-					value = a[i]*-1;
-				else
-					value = a[i];
 
-				//cout<<"i is: "<< i<<" and a[i] is: "<<(T)a[i]<<endl;
-				//cout<<"a["<<i+value+sizeof(T)<<"] is: "<<(T)a[i+value+sizeof(T)]<<endl;
-				if(a[i] != a[i+value+sizeof(T)]){
-					isVal = false;
-					break;
+			while(i<N-4){
+				//cout<<"This is i at the start of the loop "<<i<<endl;
+				if(view(i)<0)
+					value = view(i)*-1;
+				else
+					value = view(i);
+
+				//cout<<"i is: "<< i<<" and a[i] is: "<<(T)view(i)<<endl;
+				//cout<<"a["<<i+value+4<<"] is: "<<(T)view(i+value+4)<<endl;
+				if(view(i) != view(i+value+4)){
+					return false;
 				}
 				/*if(a[i+value+sizeof(T)]<0){
 					tempend = a[i+value+sizeof(T)]*-1;
@@ -101,7 +105,7 @@ class Allocator {
 				}*/
 				//cout<<"i is: "<< i<<" and a[i] is: "<<(T)a[i]<<endl;
 				//cout<<"a["<<i+value+sizeof(T)<<"] is: "<<(T)a[i+value+sizeof(T)]<<endl;
-				i = i+value+sizeof(T)*2;
+				i = i+value+8;
 				//cout<<"This is i before it jumps back through the while loop: "<< i<<endl;
 			}
 			//cout<<"Out of the while loop"<<endl;
@@ -132,11 +136,11 @@ class Allocator {
 		Allocator () {
 			if(N < sizeof(T) + (2 * sizeof(int)) || N <=0)
 				throw bad_alloc();
-			a[0] = N - 2*sizeof(T);
-			a[N-sizeof(T)] = N - 2*sizeof(T);
+			view(0) = N - 8;
+			view(N-4) = N - 8;
 
 			//cout<<"This is a[0]: "<<(T)a[0]<<endl;
-			//cout<<"This is a[N-sizeof(T)]: "<<(T)a[N-sizeof(T)]<<endl;
+			//cout<<"This is a[N-sizeof(T)]: "<<(T)view(N-4)<<endl;
 
 			assert(valid());
 		}
@@ -173,30 +177,39 @@ class Allocator {
 
 			bool isFound = false;
 			int sizeofN = sizeof(T) * n;
+			unsigned int unSizeofN = sizeof(T) * n;
+
+			if(unSizeofN > N-8){
+				throw bad_alloc();
+			}
 			unsigned int i = 0;
-			while(i<N-sizeof(T) && !isFound){
+
+			while(i<N-8 && !isFound){
 				//cout<<"What is i: "<<i<<endl;
-				unsigned int orig_size = a[i];
-				
-				if(a[i]<0){
-					int temp = -1*a[i];
+				int orig_size = view(i);
+				//cout<<"What is orig_size: "<<orig_size<<endl;
+				//cout<<"What is sizeofN: "<<sizeofN<<endl;
+				//cout<<"What is orig_size - sizeofN: "<<orig_size - sizeofN<<endl;
+				if(view(i)<0){
+					int temp = -1*view(i);
 					//cout<<"This is temp: "<<temp<<endl;
-					i = i+temp + 2*sizeof(T);
-				}else if(orig_size - sizeofN < sizeof(T)+(2*sizeof(4))){
-					unsigned int orig_last = i+a[i]+sizeof(T);
-					a[i] = a[i] * -1;
-					a[orig_last] = a[orig_last] * -1;
+					i = i+temp + 8;
+				}else if(orig_size - unSizeofN < sizeof(T)+(2*sizeof(4))){
+					//cout<<"We should be in here"<<endl;
+					unsigned int orig_last = i+view(i)+4;
+					view(i) = view(i) * -1;
+					view(orig_last) = view(i);
 					isFound = true;
 					/*cout<<"This is i: "<<i<<endl;
 					cout<<"This is orig_last: "<<orig_last<<endl;
 					cout<<"This is the index for the pointer: "<<i+sizeof(T)<<endl;
 					cout<<"This is the value: "<<(T)a[i]<<endl;
 					cout<<"Do we ever get here"<<endl; */
-					return (pointer)&a[i+sizeof(T)];;
-				}else if(a[i]<sizeofN){
-					i = i+a[i]+sizeof(T);
+					return (pointer)&a[i+4];;
+				}else if(view(i)<sizeofN){
+					i = i+view(i)+8;
 				}else{
-					unsigned int orig_last = i+a[i]+sizeof(T);
+					unsigned int orig_last = i+view(i)+4;
 					signed int negsize = (-1 *sizeofN);
 					signed int oldI = i;
 					
@@ -208,22 +221,25 @@ class Allocator {
 						cout<<endl;
 						cout<<endl;
 						cout<<"What is i: "<<i<<endl;*/
-						a[i] = negsize;
-						a[i + sizeofN+sizeof(T)] = negsize;
-						//cout<<"This is the address of the second part: "<< i+sizeofN+sizeof(T)<<endl;
+						view(i) = negsize;
+						view(i + sizeofN+4) = negsize;
+						//cout<<"This is the address of the second part: "<< i+sizeofN+4<<endl;
+						//cout<<"This is in it: "<<view(i+sizeofN+4)<<endl;
 						//cout<<endl;
-						i = i + sizeofN +sizeof(T)*2;
+						i = i + sizeofN +8;
 						//cout<<"This is the new i: "<<i;
 						//cout<<endl;					
-						a[i] = orig_size + (negsize)-2*sizeof(T);
+						view(i) = orig_size + (negsize)-8;
 						//cout<<"This is what goes in it: "<<orig_size+negsize-2*sizeof(T)<<endl;
-						a[orig_last] = orig_size + (negsize)-2*sizeof(T);
+						view(orig_last) = orig_size + (negsize)-8;
 						isFound = true;
+						//cout<<"Here we are"<<endl;
 						assert(valid());
+						//cout<<"Made it"<<endl;
 
 						//cout<<"This is the index for the pointer: "<<oldI+sizeof(T)<<endl;
 						//cout<<"This is the value: "<<(T)a[oldI]<<endl;
-						return (pointer)&a[oldI+sizeof(T)];
+						return (pointer)&a[oldI+4];
 					
 				}
 			}
@@ -262,11 +278,11 @@ class Allocator {
 		void deallocate (pointer p, size_type) {
 			if(p == 0)
 				throw bad_alloc();
-			unsigned int index = ((char*)p - a)-sizeof(T);
-			if(a[index] > 0)
+			unsigned int index = ((char*)p - a)-4;
+			if(view(index) > 0)
 				throw bad_alloc();
-			int size = a[index] * -1;
-			unsigned int endsent = index+ size+sizeof(T);
+			int size = view(index) * -1;
+			unsigned int endsent = index+ size+4;
 			/*cout<<"1111111111111111111111111"<<endl;
 			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 			cout<<"This should be the index:  "<<index<<endl;
@@ -281,20 +297,20 @@ class Allocator {
 			cout<<"This should be the end sentinal value: "<<(int)a[endsent]<<endl;
 			cout<<"-------------------------"<<endl;
 			cout<<"1111111111111111111111111"<<endl;*/
-			if(a[endsent] != a[index])
+			if(view(endsent) != view(index))
 				throw "The endsentinal value did not match the first sentinal value";
 
-			a[index] = (a[index]*-1);
-			int tempInd = index - sizeof(T);
+			view(index) = (view(index)*-1);
+			int tempInd = index - 4;
 			//Checks to see if the block to the left is free if so it coalleses
-			if(index > sizeof(T) && a[tempInd] >= 0){
-				int newIndex = tempInd - a[tempInd] - sizeof(T);
-				a[newIndex] = a[newIndex] + a[index]+2*sizeof(T);
+			if(index > 4 && view(tempInd) >= 0){
+				int newIndex = tempInd - view(tempInd) - 4;
+				view(newIndex) = view(newIndex) + view(index)+8;
 				index = newIndex;
 			}
 
-			a[endsent] = a[index];
-			tempInd = endsent + sizeof(T);
+			view(endsent) = view(index);
+			tempInd = endsent + 4;
 
 			/*cout<<"2222222222222222222222222"<<endl;
 			cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
@@ -313,17 +329,17 @@ class Allocator {
 			
 			//cout<<"This is tempInd value: "<<(int)a[tempInd]<<endl;
 			//cout<<"This is tempInd: "<<tempInd<<endl;
-			if(endsent +sizeof(T) < N - sizeof(T)  && a[tempInd] >=  0){
-				int newEndSent = tempInd + a[tempInd]+sizeof(T);
+			if(endsent +4 < N - 4  && view(tempInd) >=  0){
+				int newEndSent = tempInd + view(tempInd)+4;
 				/*cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 				cout<<"What is newEndSent: "<<newEndSent<<endl;
 				cout<<"What is the value of newEndSent: "<<(T)a[newEndSent]<<endl;
 				cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 				cout<<"What is oldendSent?: "<<endsent<<endl;
 				cout<<"What is it's value: "<<(T)a[endsent]<<endl;*/
-				a[newEndSent] = a[newEndSent] + a[endsent]+2*sizeof(T);
+				view(newEndSent) = view(newEndSent) + view(endsent)+8;
 				endsent = newEndSent;
-				a[index] = a[endsent];
+				view(index) = view(endsent);
 				//cout<<"This is the value of a[index]"<<(T)a[index]<<endl;
 			}
 			/*cout<<"3333333333333333333333333"<<endl;
@@ -340,7 +356,7 @@ class Allocator {
 			cout<<"This should be the end sentinal value: "<<(int)a[endsent]<<endl;
 			cout<<"-------------------------"<<endl;
 			cout<<"3333333333333333333333333"<<endl;*/
-			//assert(valid());
+			assert(valid());
 			//cout<<"We got passed this valid()."<<endl;
 		}
 
@@ -355,7 +371,9 @@ class Allocator {
 		* <your documentation>
 		*/
 		void destroy (pointer p) {
+			//cout<<"What is a[N-sizeof(T)]: "<<view(N-sizeof(T))<<endl;
 			p->~T();               // this is correct
+			//cout<<"What is a[N-sizeof(T)]: "<<view(N-sizeof(T))<<endl;
 			assert(valid());
 		}
 
@@ -367,5 +385,7 @@ class Allocator {
 		const int& view (int i) const {
 			return *reinterpret_cast<const int*>(&a[i]);
 		}
+
+
 };
 #endif // Allocator_h
